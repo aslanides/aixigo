@@ -2,8 +2,10 @@ package search
 
 import (
 	"aixigo/x"
+	"log"
 	"math"
 	"math/rand"
+	"runtime"
 )
 
 //Meta holds search metadata
@@ -17,8 +19,48 @@ type Meta struct {
 	PRN     *rand.Rand
 }
 
-//GetAction does the things
-func GetAction(meta *Meta) x.Action {
+//GetActionParallel does parallel things (Root parallelism)
+func GetActionParallel(meta *Meta) x.Action {
+	cpu := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpu)
+	if meta.Samples%cpu != 0 {
+		log.Fatalf("Samples (%d) is not a multiple of # cpus (%d)\n", meta.Samples, cpu)
+	}
+	samplesPerCPU := meta.Samples / cpu
+	metas := make([]*Meta, cpu, cpu)
+	for i := 0; i < cpu; i++ {
+		m := &Meta{}
+		*m = *meta
+		m.Samples = samplesPerCPU
+		m.Model = meta.Model.Copy()
+		m.PRN = x.NewPRN()
+		metas[i] = m
+	}
+	ch := make(chan *decisionNode, cpu)
+	for _, m := range metas {
+		go func(m *Meta) {
+			root := mcts(m)
+			ch <- root
+		}(m)
+	}
+	totals := make([]float64, int(meta.NumActions), int(meta.NumActions))
+	visits := make([]float64, int(meta.NumActions), int(meta.NumActions))
+	for i := 0; i < cpu; i++ {
+		n := <-ch
+		for a := x.Action(0); a < meta.NumActions; a++ {
+			child := n.getChild(a)
+			totals[int(a)] += child.mean * child.visits
+			visits[int(a)] += child.visits
+		}
+	}
+	for i := range totals {
+		totals[i] /= visits[i]
+	}
+
+	return x.Action(x.ArgMax(totals))
+}
+
+func mcts(meta *Meta) *decisionNode {
 	model := meta.Model
 	root := newDecisionNode(meta)
 	model.SaveCheckpoint()
@@ -26,6 +68,10 @@ func GetAction(meta *Meta) x.Action {
 		root.sample(0)
 		model.LoadCheckpoint()
 	}
+	return root
+}
+
+func bestAction(meta *Meta, root *decisionNode) x.Action {
 	action := x.Action(-1)
 	max := math.Inf(-1)
 	for a := x.Action(0); a < meta.NumActions; a++ {
@@ -36,6 +82,12 @@ func GetAction(meta *Meta) x.Action {
 		}
 	}
 	return action
+}
+
+//GetAction does things
+func GetAction(meta *Meta) x.Action {
+	root := mcts(meta)
+	return bestAction(meta, root)
 }
 
 type node interface {

@@ -45,7 +45,3 @@ func TestMovement(t *testing.T) {
 	e = grid.Perform(4) // stay succeeds
 	assert.Equal(t, emptyReward, e.R)
 }
-
-// func TestPrint(t *testing.T) {
-// 	grid.Print()
-// }

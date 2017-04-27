@@ -17,5 +17,5 @@ func (agent *AImu) Update(a x.Action, e x.Percept) {
 
 // GetAction ...
 func (agent *AImu) GetAction() x.Action {
-	return search.GetAction(agent.Meta)
+	return search.GetActionParallel(agent.Meta)
 }

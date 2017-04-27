@@ -2,7 +2,6 @@ package grid
 
 import (
 	"aixigo/x"
-	"fmt"
 	"testing"
 
 	assert "github.com/stretchr/testify/assert"
@@ -39,7 +38,31 @@ func TestModel(t *testing.T) {
 	assert.Equal(t, int(e.R), 10)
 	assert.Equal(t, model.pos.X(), 4)
 	assert.Equal(t, model.pos.Y(), 1)
-	fmt.Println(model.pos)
-	fmt.Println(e)
+}
 
+func TestCopy(t *testing.T) {
+	model := NewModel(spec)
+	model.savedPos = model.Tiles[2][2]
+	newModel := &Model{}
+	*newModel = *model
+	model.pos = model.Tiles[3][2]
+	assert.Equal(t, 0, newModel.pos.X())
+	newModel.pos = newModel.Tiles[1][1]
+	assert.Equal(t, 3, model.pos.X())
+	assert.Equal(t, 1, newModel.pos.Y())
+	model.savedPos = model.Tiles[4][4]
+	assert.Equal(t, 2, newModel.savedPos.X())
+}
+
+func TestCopy2(t *testing.T) {
+	model := NewModel(spec)
+	model.savedPos = model.Tiles[2][2]
+	newModel := model.Copy().(*Model) // only necessary for testing
+	model.pos = model.Tiles[3][2]
+	assert.Equal(t, 0, newModel.pos.X())
+	newModel.pos = newModel.Tiles[1][1]
+	assert.Equal(t, 3, model.pos.X())
+	assert.Equal(t, 1, newModel.pos.Y())
+	model.savedPos = model.Tiles[4][4]
+	assert.Equal(t, 2, newModel.savedPos.X())
 }

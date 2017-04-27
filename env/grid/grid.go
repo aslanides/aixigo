@@ -1,9 +1,6 @@
 package grid
 
-import (
-	"aixigo/x"
-	"fmt"
-)
+import "aixigo/x"
 
 //Meta gives the Gridworld Metadata
 var Meta x.Meta
@@ -25,9 +22,6 @@ type Gridworld struct {
 
 //Perform an action and get a Percept back
 func (gw *Gridworld) Perform(action x.Action) x.Percept {
-	if action < 0 || action > Meta.NumActions {
-		panic("at the Disco!")
-	}
 	var r x.Reward
 	n, found := gw.pos.GetNeighbor(action)
 	if found {
@@ -39,28 +33,6 @@ func (gw *Gridworld) Perform(action x.Action) x.Percept {
 	o := gw.pos.Obs()
 
 	return x.Percept{O: o, R: r}
-}
-
-//Print does some bullshit Holy shit dude
-func (gw *Gridworld) Print() {
-	for _, row := range gw.Tiles {
-		s := ""
-		for _, t := range row {
-			if gw.pos == t {
-				s += "X"
-			} else {
-				switch t.(type) {
-				case *empty:
-					s += "0"
-				case *wall:
-					s += "1"
-				case *dispenser:
-					s += "2"
-				}
-			}
-		}
-		fmt.Println(s)
-	}
 }
 
 //New Gangsta shit

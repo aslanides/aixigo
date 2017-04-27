@@ -22,12 +22,12 @@ func NewModel(spec [][]int) *Model {
 //Update method
 func (model *Model) Update(a x.Action, e x.Percept) {}
 
-//SaveCheckpoint does shit
+//SaveCheckpoint ...
 func (model *Model) SaveCheckpoint() {
 	model.savedPos = model.pos
 }
 
-//LoadCheckpoint does things
+//LoadCheckpoint ...
 func (model *Model) LoadCheckpoint() {
 	model.pos = model.savedPos
 }
@@ -35,4 +35,11 @@ func (model *Model) LoadCheckpoint() {
 //ConditionalDistribution kek
 func (model *Model) ConditionalDistribution(e x.Percept) float64 {
 	return 1.0
+}
+
+//Copy ...
+func (model *Model) Copy() x.Model {
+	newModel := &Model{}
+	*newModel = *model
+	return newModel
 }

@@ -41,6 +41,7 @@ type Model interface {
 	ConditionalDistribution(e Percept) float64
 	SaveCheckpoint()
 	LoadCheckpoint()
+	Copy() Model
 }
 
 //Utility function type
