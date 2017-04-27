@@ -49,4 +49,7 @@ func TestSearchDeterministic(t *testing.T) {
 	a = GetAction(meta)
 	assert.Equal(t, x.Action(3), a)
 	meta.Model.Perform(a)
+
+	a = GetAction(meta)
+	assert.Equal(t, x.Action(4), a)
 }
