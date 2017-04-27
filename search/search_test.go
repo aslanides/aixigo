@@ -11,9 +11,10 @@ import (
 
 var meta *Meta
 var env x.Environment
+var spec [][]int
 
 func init() {
-	spec := [][]int{
+	spec = [][]int{
 		{0, 0, 1},
 		{1, 0, 0},
 		{0, 1, 2},
@@ -31,6 +32,7 @@ func init() {
 }
 
 func helperSearchDeterministic(t *testing.T, planner func(*Meta) x.Action) {
+	meta.Model = grid.NewModel(spec)
 	var a x.Action
 	a = planner(meta)
 	assert.Equal(t, x.Action(1), a)
@@ -60,21 +62,27 @@ func TestSearchDeterministicParallel(t *testing.T) {
 	helperSearchDeterministic(t, GetActionParallel)
 }
 
-func BenchmarkSearchHorizon10(b *testing.B) {
+// Benchmarks
+//
+//
+
+func BenchmarkHorizon10Samples1k(b *testing.B) {
 	meta.Horizon = 10
+	meta.Samples = 1000
 	for n := 0; n < b.N; n++ {
 		GetAction(meta)
 	}
 }
 
-func BenchmarkSearchHorizon20(b *testing.B) {
+func BenchmarkHorizon20Samples1k(b *testing.B) {
 	meta.Horizon = 20
+	meta.Samples = 1000
 	for n := 0; n < b.N; n++ {
 		GetAction(meta)
 	}
 }
 
-func BenchmarkSearchSamples10k(b *testing.B) {
+func BenchmarkHorizon10Samples10k(b *testing.B) {
 	meta.Horizon = 10
 	meta.Samples = 10000
 	for n := 0; n < b.N; n++ {
@@ -82,7 +90,7 @@ func BenchmarkSearchSamples10k(b *testing.B) {
 	}
 }
 
-func BenchmarkSearchSamplesParallel10k(b *testing.B) {
+func BenchmarkParallelHorizon10Samples10K(b *testing.B) {
 	meta.Horizon = 10
 	meta.Samples = 10000
 	for n := 0; n < b.N; n++ {

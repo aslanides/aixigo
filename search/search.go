@@ -2,47 +2,47 @@ package search
 
 import (
 	"aixigo/x"
-	"log"
 	"math"
 	"math/rand"
 	"runtime"
 )
 
-//Meta holds search metadata
+// Meta holds search metadata
 type Meta struct {
-	x.Meta
-	Horizon int
-	Samples int
-	UCB     float64
-	Model   x.Model
-	Utility x.Utility
-	PRN     *rand.Rand
+	x.Meta             // Base Meta struct, holding environment metadata
+	Horizon int        // MCTS planning horizon
+	Samples int        // MCTS samples
+	UCB     float64    // MCTS exploration constant
+	Model   x.Model    // Environment model
+	Utility x.Utility  // Agent utility function
+	PRN     *rand.Rand // Pseudorandom number generator for sampling
 }
 
-//GetActionParallel does parallel things (Root parallelism)
+//GetAction does serial MCTS
+func GetAction(meta *Meta) x.Action {
+	root := mcts(meta)
+	return bestAction(meta, root)
+}
+
+// GetActionParallel does parallel MCTS (root parallelism)
 func GetActionParallel(meta *Meta) x.Action {
 	cpu := runtime.NumCPU()
 	runtime.GOMAXPROCS(cpu)
-	if meta.Samples%cpu != 0 {
-		log.Fatalf("Samples (%d) is not a multiple of # cpus (%d)\n", meta.Samples, cpu)
-	}
 	samplesPerCPU := meta.Samples / cpu
-	metas := make([]*Meta, cpu, cpu)
+	ch := make(chan *decisionNode, cpu)
 	for i := 0; i < cpu; i++ {
 		m := &Meta{}
 		*m = *meta
 		m.Samples = samplesPerCPU
 		m.Model = meta.Model.Copy()
 		m.PRN = x.NewPRN()
-		metas[i] = m
-	}
-	ch := make(chan *decisionNode, cpu)
-	for _, m := range metas {
+
 		go func(m *Meta) {
 			root := mcts(m)
 			ch <- root
 		}(m)
 	}
+
 	totals := make([]float64, int(meta.NumActions), int(meta.NumActions))
 	visits := make([]float64, int(meta.NumActions), int(meta.NumActions))
 	for i := 0; i < cpu; i++ {
@@ -84,12 +84,6 @@ func bestAction(meta *Meta, root *decisionNode) x.Action {
 	return action
 }
 
-//GetAction does things
-func GetAction(meta *Meta) x.Action {
-	root := mcts(meta)
-	return bestAction(meta, root)
-}
-
 type node interface {
 	addChild(v interface{})
 	getChild(v interface{}) (node, bool)
@@ -125,7 +119,7 @@ func newChanceNode(a x.Action, meta *Meta) *chanceNode {
 }
 
 func (cn *chanceNode) getKey(e x.Percept) x.Reward {
-	return x.Reward(e.O.ToInt())*cn.meta.MaxReward + e.R // TODO yuckyuck
+	return x.Reward(x.ToInt(e.O))*cn.meta.MaxReward + e.R // TODO yuckyuck
 }
 
 func (cn *chanceNode) addChild(e x.Percept) {

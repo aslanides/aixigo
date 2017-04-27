@@ -24,16 +24,20 @@ func main() {
 	meta := &search.Meta{
 		Meta:    grid.Meta,
 		Horizon: 7,
-		Samples: 1000,
+		Samples: 10000,
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
 		Utility: func(e x.Percept, dfr int) float64 { return float64(e.R) },
 		PRN:     rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 	agent := &aixi.AImu{Meta: meta}
-
+	cycles := 100
+	fmt.Printf("Running for %d cycles with %d samples, using horizon %d\n",
+		cycles, meta.Samples, meta.Horizon)
 	log := run(agent, env, 100)
-	fmt.Println(averageReward(log))
+	fmt.Printf("Agent's avg reward per cycle: %f\n", averageReward(log))
+	fmt.Printf("Optimal avg reward per cycle: %f\n",
+		float64(meta.MaxReward)*(float64(cycles)-12.0)/float64(cycles))
 }
 
 type trace struct {

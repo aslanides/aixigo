@@ -40,6 +40,16 @@ func TestModel(t *testing.T) {
 	assert.Equal(t, model.pos.Y(), 1)
 }
 
+func TestSaveLoad(t *testing.T) {
+	model := NewModel(spec)
+	model.SaveCheckpoint()
+	e := model.Perform(x.Action(1))
+	assert.Equal(t, 1.0, model.ConditionalDistribution(e))
+	assert.Equal(t, 1, model.pos.X())
+	model.LoadCheckpoint()
+	assert.Equal(t, 0, model.pos.X())
+}
+
 func TestCopy(t *testing.T) {
 	model := NewModel(spec)
 	model.savedPos = model.Tiles[2][2]

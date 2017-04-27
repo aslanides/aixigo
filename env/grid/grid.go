@@ -2,7 +2,7 @@ package grid
 
 import "aixigo/x"
 
-//Meta gives the Gridworld Metadata
+//Meta is the Gridworld Metadata
 var Meta x.Meta
 
 func init() {
@@ -13,7 +13,7 @@ func init() {
 		MinReward:  wallPenalty}
 }
 
-//Gridworld in the motherfucking streets
+//Gridworld struct
 type Gridworld struct {
 	Tiles [][]tile
 	n     int
@@ -35,7 +35,7 @@ func (gw *Gridworld) Perform(action x.Action) x.Percept {
 	return x.Percept{O: o, R: r}
 }
 
-//New Gangsta shit
+//New Gridworld
 func New(spec [][]int) *Gridworld {
 	n := len(spec)
 	tiles := [][]tile{}

@@ -60,7 +60,6 @@ func (e empty) Rew() x.Reward {
 	return emptyReward
 }
 
-// Dispenser is kinda cute
 type dispenser struct {
 	baseTile
 }
@@ -69,7 +68,6 @@ func (d dispenser) Rew() x.Reward {
 	return dispenserReward
 }
 
-//Wall kek
 type wall struct {
 	baseTile
 }

@@ -2,15 +2,14 @@ package grid
 
 import "aixigo/x"
 
+//Model currently is just an environment wrapper (for usage with AImu)
 // TODO generalize to mixtures
-
-//Model lol
 type Model struct {
 	Gridworld
 	savedPos tile
 }
 
-//NewModel does the things
+//NewModel is our constructor
 func NewModel(spec [][]int) *Model {
 	m := New(spec)
 	return &Model{
@@ -19,7 +18,7 @@ func NewModel(spec [][]int) *Model {
 	}
 }
 
-//Update method
+//Update ...
 func (model *Model) Update(a x.Action, e x.Percept) {}
 
 //SaveCheckpoint ...
@@ -32,7 +31,7 @@ func (model *Model) LoadCheckpoint() {
 	model.pos = model.savedPos
 }
 
-//ConditionalDistribution kek
+//ConditionalDistribution ...
 func (model *Model) ConditionalDistribution(e x.Percept) float64 {
 	return 1.0
 }
