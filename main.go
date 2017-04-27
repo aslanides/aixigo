@@ -7,8 +7,6 @@ import (
 	"aixigo/x"
 	"fmt"
 	"math"
-	"math/rand"
-	"time"
 )
 
 func main() {
@@ -28,7 +26,7 @@ func main() {
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
 		Utility: func(e x.Percept, dfr int) float64 { return float64(e.R) },
-		PRN:     rand.New(rand.NewSource(time.Now().UnixNano())),
+		PRN:     x.NewPRN(),
 	}
 	agent := &aixi.AImu{Meta: meta}
 	cycles := 100
