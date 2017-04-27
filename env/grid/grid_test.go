@@ -1,4 +1,4 @@
-package env
+package grid
 
 import (
 	"aixigo/x"
@@ -8,7 +8,7 @@ import (
 )
 
 var spec [][]int
-var grid Gridworld
+var grid *Gridworld
 
 func init() {
 	spec = [][]int{
@@ -18,7 +18,7 @@ func init() {
 		{0, 1, 0, 1, 0},
 		{0, 1, 0, 0, 0},
 	}
-	grid = NewGrid(spec)
+	grid = New(spec)
 }
 
 func TestConnection(t *testing.T) {

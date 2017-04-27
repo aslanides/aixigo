@@ -33,3 +33,26 @@ type Meta struct {
 	MaxReward  Reward
 	MinReward  Reward
 }
+
+// Model interface
+type Model interface {
+	Perform(a Action) Percept
+	Update(a Action, e Percept)
+	ConditionalDistribution(e Percept) float64
+	SaveCheckpoint()
+	LoadCheckpoint()
+}
+
+//Utility function type
+type Utility func(e Percept, dfr int) float64
+
+//Environment ...
+type Environment interface {
+	Perform(action Action) Percept
+}
+
+//Agent ...
+type Agent interface {
+	GetAction() Action
+	Update(Action, Percept)
+}

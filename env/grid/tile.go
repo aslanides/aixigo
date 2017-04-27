@@ -1,4 +1,4 @@
-package env
+package grid
 
 import "aixigo/x"
 
@@ -23,7 +23,7 @@ type baseTile struct {
 
 func (t baseTile) Obs() x.Observation {
 	o := x.Observation{false, false, false, false}
-	for i := 0; i < meta.ObsBits; i++ {
+	for i := 0; i < Meta.ObsBits; i++ {
 		_, found := t.neighbors[x.Action(i)] // TODO: ow
 		if found {
 			// not a wall

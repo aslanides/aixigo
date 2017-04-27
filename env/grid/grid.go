@@ -1,14 +1,15 @@
-package env
+package grid
 
 import (
 	"aixigo/x"
 	"fmt"
 )
 
-var meta x.Meta
+//Meta gives the Gridworld Metadata
+var Meta x.Meta
 
 func init() {
-	meta = x.Meta{
+	Meta = x.Meta{
 		ObsBits:    4,
 		NumActions: 5,
 		MaxReward:  dispenserReward,
@@ -24,7 +25,7 @@ type Gridworld struct {
 
 //Perform an action and get a Percept back
 func (gw *Gridworld) Perform(action x.Action) x.Percept {
-	if action < 0 || action > meta.NumActions {
+	if action < 0 || action > Meta.NumActions {
 		panic("at the Disco!")
 	}
 	var r x.Reward
@@ -62,8 +63,8 @@ func (gw *Gridworld) Print() {
 	}
 }
 
-//NewGrid Gangsta shit
-func NewGrid(spec [][]int) Gridworld {
+//New Gangsta shit
+func New(spec [][]int) *Gridworld {
 	n := len(spec)
 	tiles := [][]tile{}
 	for i := 0; i < n; i++ {
@@ -125,21 +126,5 @@ func NewGrid(spec [][]int) Gridworld {
 		}
 	}
 
-	return Gridworld{tiles, n, tiles[0][0]}
-}
-
-// GridworldModel lol
-type GridworldModel struct {
-	Gridworld
-	savedPos tile
-}
-
-//SaveCheckpoint does shit
-func (model *GridworldModel) SaveCheckpoint() {
-	model.savedPos = model.pos
-}
-
-//LoadCheckpoint does things
-func (model *GridworldModel) LoadCheckpoint() {
-	model.pos = model.savedPos
+	return &Gridworld{tiles, n, tiles[0][0]}
 }
