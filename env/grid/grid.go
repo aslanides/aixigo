@@ -7,10 +7,12 @@ var Meta x.Meta
 
 func init() {
 	Meta = x.Meta{
-		ObsBits:    4,
-		NumActions: 5,
-		MaxReward:  dispenserReward,
-		MinReward:  wallPenalty}
+		ObsBits:     4,
+		NumActions:  5,
+		MaxReward:   dispenserReward,
+		MinReward:   wallPenalty,
+		RewardRange: float64(dispenserReward - wallPenalty),
+	}
 }
 
 //Gridworld struct
@@ -51,7 +53,6 @@ func New(spec [][]int) *Gridworld {
 			case 2:
 				t = &dispenser{newBaseTile(i, j)}
 			default:
-				panic("Unsupported tile type")
 			}
 			row = append(row, t)
 		}

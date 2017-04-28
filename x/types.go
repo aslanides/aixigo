@@ -17,10 +17,11 @@ type Action int
 
 //Meta object contains environment metadata
 type Meta struct {
-	ObsBits    int
-	NumActions Action
-	MaxReward  Reward
-	MinReward  Reward
+	ObsBits     int
+	NumActions  Action
+	MaxReward   Reward
+	MinReward   Reward
+	RewardRange float64
 }
 
 // Model interface

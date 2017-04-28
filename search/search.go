@@ -186,7 +186,7 @@ func (dn *decisionNode) getChild(a x.Action) *chanceNode {
 	return dn.children[a]
 }
 
-func (dn *decisionNode) selectAction() x.Action {
+func (dn *decisionNode) selectAction(dfr int) x.Action {
 	var a x.Action
 	if dn.nChildren != int(dn.meta.NumActions) {
 		a = x.Action(dn.U[dn.nChildren])
@@ -196,8 +196,8 @@ func (dn *decisionNode) selectAction() x.Action {
 		max := math.Inf(-1)
 		for b := x.Action(0); b < dn.meta.NumActions; b++ {
 			child := dn.getChild(b)
-			normalization := x.Reward(dn.meta.Horizon) * (dn.meta.MaxReward - dn.meta.MinReward)
-			value := child.mean/float64(normalization) + dn.meta.UCB*math.Sqrt(math.Log2(dn.visits)/child.visits)
+			normalization := float64(dn.meta.Horizon-dfr) * dn.meta.RewardRange
+			value := child.mean/normalization + dn.meta.UCB*math.Sqrt(math.Log2(dn.visits)/child.visits)
 			if value > max {
 				max = value
 				a = b
@@ -215,7 +215,7 @@ func (dn *decisionNode) sample(dfr int) float64 {
 	if dn.visits == 0.0 {
 		r = rollOut(dn.meta, dfr)
 	} else {
-		a := dn.selectAction()
+		a := dn.selectAction(dfr)
 		r = dn.getChild(a).sample(dfr)
 	}
 	dn.mean = (1.0 / (dn.visits + 1.0)) * (r + dn.visits*dn.mean)
