@@ -47,3 +47,10 @@ followed by running the interactive profiler `pprof`
 `go tool pprof aixigo.test cpu.out`
 
 We can then generate the execution graph using `web`.
+
+## TODO
+
+* Port over the mixture and Dirichlet models from AIXIjs
+* Generalize the agent implementation and port KSA/Thompson sampling
+* Try out tree parallelism and see how this affects performance (clearly we'll need to use mutexes within the tree, and so we will lose some performance by having blocked goroutines, but we gain in having 8x less memory for the GC to keep track of. We can also maybe run > nCPU goroutines to make up for the blocking, so that the scheduler can always find a non-blocked thread for each CPU. Maybe.)
+* Add more instrumentation, and implement more interesting environments (POCman, anyone?)
