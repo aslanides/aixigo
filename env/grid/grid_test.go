@@ -23,12 +23,12 @@ func init() {
 
 func TestConnection(t *testing.T) {
 	m := grid.Tiles[0][0]
-	n, found := m.GetNeighbor(4)
-	assert.True(t, found)
+	n := m.GetNeighbor(4)
+	assert.True(t, n != nil)
 	assert.Equal(t, m, n)
-	n, found = m.GetNeighbor(1)
+	n = m.GetNeighbor(1)
 	m = grid.Tiles[1][0]
-	assert.True(t, found)
+	assert.True(t, n != nil)
 	assert.Equal(t, m, n)
 }
 

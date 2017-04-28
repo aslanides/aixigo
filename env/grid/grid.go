@@ -23,8 +23,8 @@ type Gridworld struct {
 //Perform an action and get a Percept back
 func (gw *Gridworld) Perform(action x.Action) x.Percept {
 	var r x.Reward
-	n, found := gw.pos.GetNeighbor(action)
-	if found {
+	n := gw.pos.GetNeighbor(action)
+	if n != nil {
 		gw.pos = n
 		r = gw.pos.Rew()
 	} else {
@@ -45,11 +45,11 @@ func New(spec [][]int) *Gridworld {
 			var t tile
 			switch spec[j][i] {
 			case 0:
-				t = &empty{baseTile{i, j, make(map[x.Action]tile)}}
+				t = &empty{newBaseTile(i, j)}
 			case 1:
-				t = &wall{baseTile{i, j, make(map[x.Action]tile)}}
+				t = &wall{newBaseTile(i, j)}
 			case 2:
-				t = &dispenser{baseTile{i, j, make(map[x.Action]tile)}}
+				t = &dispenser{newBaseTile(i, j)}
 			default:
 				panic("Unsupported tile type")
 			}
@@ -95,6 +95,7 @@ func New(spec [][]int) *Gridworld {
 				}
 			}
 			t.AddNeighbor(4, t)
+			t.GenerateObs()
 		}
 	}
 

@@ -35,7 +35,7 @@ func main() {
 	log := run(agent, env, 100)
 	fmt.Printf("Agent's avg reward per cycle: %f\n", averageReward(log))
 	fmt.Printf("Optimal avg reward per cycle: %f\n",
-		float64(meta.MaxReward)*(float64(cycles)-12.0)/float64(cycles))
+		float64(meta.MaxReward)*(float64(cycles)-10.0)/float64(cycles))
 }
 
 type trace struct {
