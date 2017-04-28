@@ -34,4 +34,16 @@ PASS
 ok  	aixigo/search	8.065s
 ```
 
-From `BenchmarkParallelHorizon10Samples10K-8`, we see that we can run 10,000 samples with a horizon of 10 in _7 milliseconds_. This is definitely a lower bound for the performance we can realistically expect for AIXI, given that AImu does no model updates. Introducing a Bayes mixture will slow things down by a factor of M, where M is the cardinality of the model class. 
+From `BenchmarkParallelHorizon10Samples10K-8`, we see that we can run 10,000 samples with a horizon of 10 in _7 milliseconds_. This is definitely a lower bound for the performance we can realistically expect for AIXI, given that AImu does no model updates. Introducing a Bayes mixture will slow things down by a factor of M, where M is the cardinality of the model class.
+
+### Profiling
+
+We profile the main `run` method in `main_test.go` using:
+
+`go test -run=^$ -bench=. -cpuprofile=cpu.out`
+
+followed by running the interactive profiler `pprof`
+
+`go tool pprof aixigo.test cpu.out`
+
+We can then generate the execution graph using `web`.

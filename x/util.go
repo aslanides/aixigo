@@ -26,11 +26,12 @@ func ArgMax(A []float64) int {
 
 //ToInt helper for Observation objects
 func ToInt(o Observation) int {
-	s := 0
+	n := 0
 	for _, b := range o {
+		n <<= 1
 		if b {
-			s++
+			n++
 		}
 	}
-	return s
+	return n
 }

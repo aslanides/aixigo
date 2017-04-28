@@ -21,7 +21,7 @@ func main() {
 
 	meta := &search.Meta{
 		Meta:    grid.Meta,
-		Horizon: 7,
+		Horizon: 10,
 		Samples: 10000,
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
