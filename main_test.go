@@ -4,8 +4,6 @@ import (
 	"aixigo/agent/aixi"
 	"aixigo/env/grid"
 	"aixigo/search"
-	"aixigo/x"
-	"math"
 	"testing"
 )
 
@@ -19,15 +17,7 @@ func BenchmarkRun(b *testing.B) {
 	}
 	env := grid.New(spec)
 
-	meta := &search.Meta{
-		Meta:    grid.Meta,
-		Horizon: 10,
-		Samples: 10000,
-		UCB:     math.Sqrt2,
-		Model:   grid.NewModel(spec),
-		Utility: x.RLUtility,
-		PRN:     x.NewPRN(),
-	}
+	meta := search.NewMeta(grid.Meta, grid.NewModel(spec), 10000)
 	agent := &aixi.AImu{Meta: meta}
 	cycles := 100
 	b.ResetTimer()

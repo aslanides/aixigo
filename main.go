@@ -6,7 +6,6 @@ import (
 	"aixigo/search"
 	"aixigo/x"
 	"fmt"
-	"math"
 )
 
 func main() {
@@ -18,16 +17,8 @@ func main() {
 		{0, 1, 0, 0, 0},
 	}
 	env := grid.New(spec)
+	meta := search.NewMeta(grid.Meta, grid.NewModel(spec), 10000)
 
-	meta := &search.Meta{
-		Meta:    grid.Meta,
-		Horizon: 10,
-		Samples: 10000,
-		UCB:     math.Sqrt2,
-		Model:   grid.NewModel(spec),
-		Utility: func(o x.Observation, r x.Reward, dfr int) float64 { return float64(r) },
-		PRN:     x.NewPRN(),
-	}
 	agent := &aixi.AImu{Meta: meta}
 	cycles := 100
 	fmt.Printf("Running for %d cycles with %d samples, using horizon %d\n",

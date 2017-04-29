@@ -3,7 +3,6 @@ package search
 import (
 	"aixigo/env/grid"
 	"aixigo/x"
-	"math"
 	"testing"
 
 	assert "github.com/stretchr/testify/assert"
@@ -19,15 +18,7 @@ func init() {
 		{1, 0, 0},
 		{0, 1, 2},
 	}
-	meta = &Meta{
-		Meta:    grid.Meta,
-		Horizon: 6,
-		Samples: 10000,
-		UCB:     math.Sqrt2,
-		Model:   grid.NewModel(spec),
-		Utility: x.RLUtility,
-		PRN:     x.NewPRN(),
-	}
+	meta = NewMeta(grid.Meta, grid.NewModel(spec), 10000)
 	env = grid.New(spec)
 }
 

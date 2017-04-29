@@ -16,6 +16,28 @@ type Meta struct {
 	Model   x.Model    // Environment model
 	Utility x.Utility  // Agent utility function
 	PRN     *rand.Rand // Pseudorandom number generator for sampling
+	U       []int      // Order in which to explore actions
+	// (NOTE: putting this here is a performance hack)
+	// search for commit message "U2" to undo this
+}
+
+// NewMeta gives sensible defaults
+func NewMeta(meta x.Meta, model x.Model, samples int) *Meta {
+	// sensible defaults
+
+	m := Meta{
+		Meta:    meta,
+		Horizon: 10,
+		Samples: samples,
+		UCB:     math.Sqrt2,
+		Model:   model,
+		Utility: x.RLUtility,
+		PRN:     x.NewPRN(),
+		U:       make([]int, meta.NumActions, meta.NumActions),
+	}
+	m.U = m.PRN.Perm(int(meta.NumActions))
+
+	return &m
 }
 
 //GetAction does serial MCTS
@@ -36,6 +58,7 @@ func GetActionParallel(meta *Meta) x.Action {
 		m.Samples = samplesPerCPU
 		m.Model = meta.Model.Copy()
 		m.PRN = x.NewPRN()
+		m.U = meta.PRN.Perm(int(meta.NumActions))
 
 		go func(m *Meta) {
 			root := mcts(m)
@@ -165,7 +188,6 @@ func rollOut(meta *Meta, dfr int) float64 {
 type decisionNode struct {
 	searchNode
 	children  []*chanceNode
-	U         []int
 	nChildren int
 }
 
@@ -173,7 +195,6 @@ func newDecisionNode(meta *Meta) *decisionNode {
 	return &decisionNode{
 		searchNode: newSearchNode(meta),
 		children:   make([]*chanceNode, meta.NumActions, meta.NumActions),
-		U:          meta.PRN.Perm(int(meta.NumActions)),
 		nChildren:  0,
 	}
 }
@@ -189,7 +210,7 @@ func (dn *decisionNode) getChild(a x.Action) *chanceNode {
 func (dn *decisionNode) selectAction(dfr int) x.Action {
 	var a x.Action
 	if dn.nChildren != int(dn.meta.NumActions) {
-		a = x.Action(dn.U[dn.nChildren])
+		a = x.Action(dn.meta.U[dn.nChildren])
 		dn.addChild(a)
 		dn.nChildren++
 	} else {
