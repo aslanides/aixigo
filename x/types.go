@@ -3,8 +3,11 @@ package x
 //Reward is int (for now)
 type Reward int
 
-//Observation is array of bools (for now)
-type Observation []bool
+//Observation is int (for now)
+type Observation int
+
+//ObservationBits bit format
+type ObservationBits []bool
 
 //Percept is a simple (o,r) composite
 type Percept struct {

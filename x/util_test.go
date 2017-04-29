@@ -7,15 +7,15 @@ import (
 )
 
 func TestToInt(t *testing.T) {
-	var o Observation
-	o = Observation{false, true, true, false, true}
-	assert.Equal(t, 13, ToInt(o))
-	o = Observation{false, false, false}
-	assert.Equal(t, 0, ToInt(o))
-	o = Observation{true, false, false, false, false}
-	assert.Equal(t, 16, ToInt(o))
-	o = Observation{false, false, false, false, true}
-	assert.Equal(t, 1, ToInt(o))
+	var o ObservationBits
+	o = ObservationBits{false, true, true, false, true}
+	assert.Equal(t, Observation(13), ToInt(o))
+	o = ObservationBits{false, false, false}
+	assert.Equal(t, Observation(0), ToInt(o))
+	o = ObservationBits{true, false, false, false, false}
+	assert.Equal(t, Observation(16), ToInt(o))
+	o = ObservationBits{false, false, false, false, true}
+	assert.Equal(t, Observation(1), ToInt(o))
 }
 
 func TestArgMax(t *testing.T) {

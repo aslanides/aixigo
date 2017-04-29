@@ -25,7 +25,7 @@ func ArgMax(A []float64) int {
 }
 
 //ToInt helper for Observation objects
-func ToInt(o Observation) int {
+func ToInt(o ObservationBits) Observation {
 	n := 0
 	for _, b := range o {
 		n <<= 1
@@ -33,15 +33,10 @@ func ToInt(o Observation) int {
 			n++
 		}
 	}
-	return n
+	return Observation(n)
 }
 
 // Equals checks equality of percepts
 func Equals(e, p *Percept) bool {
-	for idx := range p.O {
-		if p.O[idx] != e.O[idx] {
-			return false
-		}
-	}
-	return p.R == e.R
+	return p.R == e.R && p.O == e.O
 }

@@ -19,6 +19,7 @@ type tile interface {
 type baseTile struct {
 	x         int
 	y         int
+	oBits     x.ObservationBits
 	o         x.Observation
 	neighbors []tile
 }
@@ -27,7 +28,8 @@ func newBaseTile(i, j int) baseTile {
 	return baseTile{
 		x:         i,
 		y:         j,
-		o:         x.Observation(make([]bool, Meta.ObsBits, Meta.ObsBits)),
+		oBits:     x.ObservationBits(make([]bool, Meta.ObsBits, Meta.ObsBits)),
+		o:         -1,
 		neighbors: make([]tile, Meta.NumActions, Meta.NumActions),
 	}
 }
@@ -51,8 +53,9 @@ func (t baseTile) GenerateObs() {
 			continue
 		}
 
-		t.o[i] = true
+		t.oBits[i] = true
 	}
+	t.o = x.ToInt(t.oBits)
 }
 
 func (t baseTile) AddNeighbor(action x.Action, n tile) {

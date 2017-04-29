@@ -130,7 +130,7 @@ func (m *Mixture) GeneratePerceptAndUpdate(a x.Action) {
 }
 
 // ConditionalDistribution (won't get used much)
-func (m *Mixture) ConditionalDistribution(e x.Percept) float64 {
+func (m *Mixture) ConditionalDistribution(e *x.Percept) float64 {
 	var wg sync.WaitGroup
 	total := make(chan float64, m.n)
 	for idx, model := range m.models {

@@ -119,7 +119,7 @@ func newChanceNode(a x.Action, meta *Meta) *chanceNode {
 }
 
 func (cn *chanceNode) getKey(e *x.Percept) x.Reward {
-	return x.Reward(x.ToInt(e.O))*cn.meta.MaxReward + e.R // TODO yuckyuck
+	return x.Reward(e.O)*cn.meta.MaxReward + e.R // TODO yuckyuck
 }
 
 func (cn *chanceNode) addChild(e *x.Percept) {
