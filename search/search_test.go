@@ -25,7 +25,7 @@ func init() {
 		Samples: 10000,
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
-		Utility: func(e *x.Percept, dfr int) float64 { return float64(e.R) },
+		Utility: x.RLUtility,
 		PRN:     x.NewPRN(),
 	}
 	env = grid.New(spec)

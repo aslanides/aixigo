@@ -40,3 +40,8 @@ func ToInt(o ObservationBits) Observation {
 func Equals(e, p *Percept) bool {
 	return p.R == e.R && p.O == e.O
 }
+
+// RLUtility is the utility function for normal reward-based reinforcement learners
+func RLUtility(o Observation, r Reward, dfr int) float64 {
+	return float64(r)
+}

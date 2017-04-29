@@ -118,48 +118,48 @@ func newChanceNode(a x.Action, meta *Meta) *chanceNode {
 	}
 }
 
-func (cn *chanceNode) getKey(e *x.Percept) x.Reward {
-	return x.Reward(e.O)*cn.meta.MaxReward + e.R // TODO yuckyuck
+func (cn *chanceNode) getKey(o x.Observation, r x.Reward) x.Reward {
+	return x.Reward(o)*cn.meta.MaxReward + r // TODO yuckyuck
 }
 
-func (cn *chanceNode) addChild(e *x.Percept) {
-	key := cn.getKey(e)
+func (cn *chanceNode) addChild(o x.Observation, r x.Reward) {
+	key := cn.getKey(o, r)
 	cn.children[key] = newDecisionNode(cn.meta)
 }
 
-func (cn *chanceNode) getChild(e *x.Percept) (*decisionNode, bool) {
-	key := cn.getKey(e)
+func (cn *chanceNode) getChild(o x.Observation, r x.Reward) (*decisionNode, bool) {
+	key := cn.getKey(o, r)
 	child, found := cn.children[key]
 	return child, found
 }
 
 func (cn *chanceNode) sample(dfr int) float64 {
-	r := 0.0
+	R := 0.0
 	if dfr == cn.meta.Horizon {
-		return r
+		return R
 	}
 	a := cn.action
-	e := cn.meta.Model.Perform(a)
-	cn.meta.Model.Update(a, e)
-	if _, found := cn.getChild(e); !found {
-		cn.addChild(e)
+	o, r := cn.meta.Model.Perform(a)
+	cn.meta.Model.Update(a, o, r)
+	if _, found := cn.getChild(o, r); !found {
+		cn.addChild(o, r)
 	}
-	child, _ := cn.getChild(e)
-	r = cn.meta.Utility(e, dfr) + child.sample(dfr+1)
-	cn.mean = (1.0 / (cn.visits + 1.0)) * (r + cn.visits*cn.mean)
+	child, _ := cn.getChild(o, r)
+	R = cn.meta.Utility(o, r, dfr) + child.sample(dfr+1)
+	cn.mean = (1.0 / (cn.visits + 1.0)) * (R + cn.visits*cn.mean)
 	cn.visits += 1.0
-	return r
+	return R
 }
 
 func rollOut(meta *Meta, dfr int) float64 {
-	r := 0.0
+	R := 0.0
 	for i := dfr; i <= meta.Horizon; i++ {
 		a := x.Action(meta.PRN.Intn(int(meta.NumActions)))
-		e := meta.Model.Perform(a)
-		meta.Model.Update(a, e)
-		r += meta.Utility(e, i)
+		o, r := meta.Model.Perform(a)
+		meta.Model.Update(a, o, r)
+		R += meta.Utility(o, r, i)
 	}
-	return r
+	return R
 }
 
 type decisionNode struct {
@@ -208,17 +208,17 @@ func (dn *decisionNode) selectAction(dfr int) x.Action {
 }
 
 func (dn *decisionNode) sample(dfr int) float64 {
-	r := 0.0
+	R := 0.0
 	if dfr == dn.meta.Horizon {
-		return r
+		return R
 	}
 	if dn.visits == 0.0 {
-		r = rollOut(dn.meta, dfr)
+		R = rollOut(dn.meta, dfr)
 	} else {
 		a := dn.selectAction(dfr)
-		r = dn.getChild(a).sample(dfr)
+		R = dn.getChild(a).sample(dfr)
 	}
-	dn.mean = (1.0 / (dn.visits + 1.0)) * (r + dn.visits*dn.mean)
+	dn.mean = (1.0 / (dn.visits + 1.0)) * (R + dn.visits*dn.mean)
 	dn.visits += 1.0
-	return r
+	return R
 }

@@ -18,12 +18,12 @@ func init() {
 }
 
 func TestModel(t *testing.T) {
-	var e *x.Percept
+	var r x.Reward
 	model := NewModel(spec)
-	e = model.Perform(x.Action(4))
+	_, r = model.Perform(x.Action(4))
 	assert.Equal(t, model.pos.X(), 0)
 	assert.Equal(t, model.pos.X(), 0)
-	assert.Equal(t, int(e.R), 0)
+	assert.Equal(t, int(r), 0)
 	model.Perform(x.Action(1))
 	model.Perform(x.Action(3))
 	model.Perform(x.Action(1))
@@ -34,8 +34,8 @@ func TestModel(t *testing.T) {
 	model.Perform(x.Action(1))
 	model.Perform(x.Action(2))
 	model.Perform(x.Action(2))
-	e = model.Perform(x.Action(2))
-	assert.Equal(t, int(e.R), 10)
+	_, r = model.Perform(x.Action(2))
+	assert.Equal(t, int(r), 10)
 	assert.Equal(t, model.pos.X(), 4)
 	assert.Equal(t, model.pos.Y(), 1)
 }
@@ -43,8 +43,8 @@ func TestModel(t *testing.T) {
 func TestSaveLoad(t *testing.T) {
 	model := NewModel(spec)
 	model.SaveCheckpoint()
-	e := model.Perform(x.Action(1))
-	assert.Equal(t, 1.0, model.ConditionalDistribution(e))
+	o, r := model.Perform(x.Action(1))
+	assert.Equal(t, 1.0, model.ConditionalDistribution(o, r))
 	assert.Equal(t, 1, model.pos.X())
 	model.LoadCheckpoint()
 	assert.Equal(t, 0, model.pos.X())

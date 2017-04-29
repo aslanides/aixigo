@@ -33,15 +33,15 @@ func TestConnection(t *testing.T) {
 }
 
 func TestMovement(t *testing.T) {
-	var e *x.Percept
-	e = grid.Perform(0) // left fails
-	assert.Equal(t, wallPenalty, e.R)
-	e = grid.Perform(1) // right succeeds
-	assert.Equal(t, emptyReward, e.R)
-	e = grid.Perform(2) // up fails
-	assert.Equal(t, wallPenalty, e.R)
+	var r x.Reward
+	_, r = grid.Perform(0) // left fails
+	assert.Equal(t, wallPenalty, r)
+	_, r = grid.Perform(1) // right succeeds
+	assert.Equal(t, emptyReward, r)
+	_, r = grid.Perform(2) // up fails
+	assert.Equal(t, wallPenalty, r)
 	assert.Equal(t, grid.pos.X(), 1)
 	assert.Equal(t, grid.pos.Y(), 0)
-	e = grid.Perform(4) // stay succeeds
-	assert.Equal(t, emptyReward, e.R)
+	_, r = grid.Perform(4) // stay succeeds
+	assert.Equal(t, emptyReward, r)
 }
