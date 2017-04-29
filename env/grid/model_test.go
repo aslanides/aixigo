@@ -76,3 +76,9 @@ func TestCopy2(t *testing.T) {
 	model.savedPos = model.Tiles[4][4]
 	assert.Equal(t, 2, newModel.savedPos.X())
 }
+
+func TestMixture(t *testing.T) {
+	mix := NewMixture(spec)
+	mix.Perform(x.Action(1))
+
+}

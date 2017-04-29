@@ -218,7 +218,8 @@ func (dn *decisionNode) selectAction(dfr int) x.Action {
 		for b := x.Action(0); b < dn.meta.NumActions; b++ {
 			child := dn.getChild(b)
 			normalization := float64(dn.meta.Horizon-dfr) * dn.meta.RewardRange
-			// Using x.Log2 is a performance hack
+			// Using x.Log2 is a performance hack which means we will underestimate
+			// the logarithm
 			value := child.mean/normalization + dn.meta.UCB*math.Sqrt(float64(x.Log2(uint(dn.visits)))/child.visits)
 			if value > max {
 				max = value

@@ -38,39 +38,36 @@ func NewMixture(models []x.Model) x.Model {
 // Occasionally we will need to perform actions & update separately
 
 // Perform (concurrent implementation)
-func (m *Mixture) Perform(a x.Action) *x.Percept {
-	percept := make(chan *x.Percept, 1)
+func (m *Mixture) Perform(a x.Action) (x.Observation, x.Reward) {
 	n := sample(m)
 	var wg sync.WaitGroup
+	o, r := m.models[n].Perform(a)
 	for idx, model := range m.models {
-		if m.weights[idx] == 0 {
+		if m.weights[idx] == 0 || idx == n {
 			continue
 		}
+		wg.Add(1)
 		go func(idx int, model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
-			e := model.Perform(a)
-			if idx == n {
-				percept <- e
-			}
+			model.Perform(a)
 		}(idx, model)
 	}
 	wg.Wait()
-	return <-percept
+	return o, r
 }
 
 // Update (concurrent)
-func (m *Mixture) Update(a x.Action, e *x.Percept) {
+func (m *Mixture) Update(a x.Action, o x.Observation, r x.Reward) {
 	var wg sync.WaitGroup
 	total := make(chan float64, m.n)
 	for idx, model := range m.models {
 		if m.weights[idx] == 0 {
 			continue
 		}
+		wg.Add(1)
 		go func(idx int, model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
-			m.weights[idx] *= model.ConditionalDistribution(e)
+			m.weights[idx] *= model.ConditionalDistribution(o, r)
 			total <- m.weights[idx]
 		}(idx, model)
 	}
@@ -98,7 +95,7 @@ func (m *Mixture) Update(a x.Action, e *x.Percept) {
 // Yes, this is a *lot* of code duplication for a possibly minor performance gain
 func (m *Mixture) GeneratePerceptAndUpdate(a x.Action) {
 	n := sample(m)
-	e := m.models[n].Perform(a)
+	o, r := m.models[n].Perform(a)
 
 	var wg sync.WaitGroup
 	total := make(chan float64, m.n)
@@ -106,13 +103,13 @@ func (m *Mixture) GeneratePerceptAndUpdate(a x.Action) {
 		if m.weights[idx] == 0 {
 			continue
 		}
+		wg.Add(1)
 		go func(idx int, model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
 			if idx != n {
 				model.Perform(a)
 			}
-			m.weights[idx] *= model.ConditionalDistribution(e)
+			m.weights[idx] *= model.ConditionalDistribution(o, r)
 			total <- m.weights[idx]
 		}(idx, model)
 	}
@@ -130,17 +127,17 @@ func (m *Mixture) GeneratePerceptAndUpdate(a x.Action) {
 }
 
 // ConditionalDistribution (won't get used much)
-func (m *Mixture) ConditionalDistribution(e *x.Percept) float64 {
+func (m *Mixture) ConditionalDistribution(o x.Observation, r x.Reward) float64 {
 	var wg sync.WaitGroup
 	total := make(chan float64, m.n)
 	for idx, model := range m.models {
 		if m.weights[idx] == 0 {
 			continue
 		}
+		wg.Add(1)
 		go func(idx int, model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
-			total <- m.weights[idx] * model.ConditionalDistribution(e)
+			total <- m.weights[idx] * model.ConditionalDistribution(o, r)
 		}(idx, model)
 	}
 	wg.Wait()
@@ -159,8 +156,8 @@ func (m *Mixture) SaveCheckpoint() {
 		if m.weights[idx] == 0 {
 			continue
 		}
+		wg.Add(1)
 		go func(model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
 			model.SaveCheckpoint()
 		}(model)
@@ -175,8 +172,8 @@ func (m *Mixture) LoadCheckpoint() {
 		if m.weights[idx] == 0 {
 			continue
 		}
+		wg.Add(1)
 		go func(model x.Model) {
-			wg.Add(1)
 			defer wg.Done()
 			model.LoadCheckpoint()
 		}(model)

@@ -17,7 +17,7 @@ func main() {
 		{0, 1, 0, 0, 0},
 	}
 	env := grid.New(spec)
-	meta := search.NewMeta(grid.Meta, grid.NewModel(spec), 10000)
+	meta := search.NewMeta(grid.Meta, grid.NewMixture(spec), 10000)
 
 	agent := &aixi.AImu{Meta: meta}
 	cycles := 100
