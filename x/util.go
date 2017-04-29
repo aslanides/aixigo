@@ -35,3 +35,13 @@ func ToInt(o Observation) int {
 	}
 	return n
 }
+
+// Equals checks equality of percepts
+func Equals(e, p *Percept) bool {
+	for idx := range p.O {
+		if p.O[idx] != e.O[idx] {
+			return false
+		}
+	}
+	return p.R == e.R
+}
