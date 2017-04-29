@@ -11,7 +11,7 @@ type AImu struct {
 }
 
 // Update ...
-func (agent *AImu) Update(a x.Action, e x.Percept) {
+func (agent *AImu) Update(a x.Action, e *x.Percept) {
 	agent.Meta.Model.Perform(a)
 }
 

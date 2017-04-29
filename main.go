@@ -25,7 +25,7 @@ func main() {
 		Samples: 10000,
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
-		Utility: func(e x.Percept, dfr int) float64 { return float64(e.R) },
+		Utility: func(e *x.Percept, dfr int) float64 { return float64(e.R) },
 		PRN:     x.NewPRN(),
 	}
 	agent := &aixi.AImu{Meta: meta}
@@ -40,13 +40,13 @@ func main() {
 
 type trace struct {
 	Action  x.Action
-	Percept x.Percept
+	Percept *x.Percept
 }
 
 func run(agent x.Agent, env x.Environment, cycles int) []trace {
 	log := make([]trace, cycles, cycles)
 	var a x.Action
-	var e x.Percept
+	var e *x.Percept
 	for iter := 0; iter < cycles; iter++ {
 		a = agent.GetAction()
 		e = env.Perform(a)

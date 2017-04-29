@@ -26,24 +26,24 @@ type Meta struct {
 
 // Model interface
 type Model interface {
-	Perform(a Action) Percept                  // Implements the Environment interface
-	Update(a Action, e Percept)                // Must be updateable
-	ConditionalDistribution(e Percept) float64 // Must be probabilistic
-	SaveCheckpoint()                           // Save and Load are needed to reset MCTS simulations
-	LoadCheckpoint()                           //
-	Copy() Model                               // Need to be easy to copy
+	Perform(a Action) *Percept                  // Implements the Environment interface
+	Update(a Action, e *Percept)                // Must be updateable
+	ConditionalDistribution(e *Percept) float64 // Must be probabilistic
+	SaveCheckpoint()                            // Save and Load are needed to reset MCTS simulations
+	LoadCheckpoint()                            //
+	Copy() Model                                // Need to be easy to copy
 }
 
 //Utility function signature
-type Utility func(e Percept, dfr int) float64
+type Utility func(e *Percept, dfr int) float64
 
 //Environment interface
 type Environment interface {
-	Perform(action Action) Percept
+	Perform(action Action) *Percept
 }
 
 //Agent interface
 type Agent interface {
 	GetAction() Action
-	Update(Action, Percept)
+	Update(Action, *Percept)
 }

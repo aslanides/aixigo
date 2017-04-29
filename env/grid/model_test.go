@@ -18,7 +18,7 @@ func init() {
 }
 
 func TestModel(t *testing.T) {
-	var e x.Percept
+	var e *x.Percept
 	model := NewModel(spec)
 	e = model.Perform(x.Action(4))
 	assert.Equal(t, model.pos.X(), 0)

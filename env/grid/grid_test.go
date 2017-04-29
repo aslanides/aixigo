@@ -33,7 +33,7 @@ func TestConnection(t *testing.T) {
 }
 
 func TestMovement(t *testing.T) {
-	var e x.Percept
+	var e *x.Percept
 	e = grid.Perform(0) // left fails
 	assert.Equal(t, wallPenalty, e.R)
 	e = grid.Perform(1) // right succeeds

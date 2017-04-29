@@ -19,7 +19,7 @@ func NewModel(spec [][]int) *Model {
 }
 
 //Update ...
-func (model *Model) Update(a x.Action, e x.Percept) {}
+func (model *Model) Update(a x.Action, e *x.Percept) {}
 
 //SaveCheckpoint ...
 func (model *Model) SaveCheckpoint() {
@@ -32,8 +32,13 @@ func (model *Model) LoadCheckpoint() {
 }
 
 //ConditionalDistribution ...
-func (model *Model) ConditionalDistribution(e x.Percept) float64 {
-	return 1.0
+func (model *Model) ConditionalDistribution(e *x.Percept) float64 {
+	p := model.Perform(x.Action(4)) // hmm, this seems dodgy, maybe use genPercept instead?
+	if x.Equals(e, p) {
+		return 1.0
+	}
+	return 0.0
+
 }
 
 //Copy ...

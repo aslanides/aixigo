@@ -118,16 +118,16 @@ func newChanceNode(a x.Action, meta *Meta) *chanceNode {
 	}
 }
 
-func (cn *chanceNode) getKey(e x.Percept) x.Reward {
+func (cn *chanceNode) getKey(e *x.Percept) x.Reward {
 	return x.Reward(x.ToInt(e.O))*cn.meta.MaxReward + e.R // TODO yuckyuck
 }
 
-func (cn *chanceNode) addChild(e x.Percept) {
+func (cn *chanceNode) addChild(e *x.Percept) {
 	key := cn.getKey(e)
 	cn.children[key] = newDecisionNode(cn.meta)
 }
 
-func (cn *chanceNode) getChild(e x.Percept) (*decisionNode, bool) {
+func (cn *chanceNode) getChild(e *x.Percept) (*decisionNode, bool) {
 	key := cn.getKey(e)
 	child, found := cn.children[key]
 	return child, found

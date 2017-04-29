@@ -23,7 +23,7 @@ type Gridworld struct {
 }
 
 //Perform an action and get a Percept back
-func (gw *Gridworld) Perform(action x.Action) x.Percept {
+func (gw *Gridworld) Perform(action x.Action) *x.Percept {
 	var r x.Reward
 	n := gw.pos.GetNeighbor(action)
 	if n != nil {
@@ -34,7 +34,7 @@ func (gw *Gridworld) Perform(action x.Action) x.Percept {
 	}
 	o := gw.pos.Obs()
 
-	return x.Percept{O: o, R: r}
+	return &x.Percept{O: o, R: r}
 }
 
 //New Gridworld

@@ -25,7 +25,7 @@ func BenchmarkRun(b *testing.B) {
 		Samples: 10000,
 		UCB:     math.Sqrt2,
 		Model:   grid.NewModel(spec),
-		Utility: func(e x.Percept, dfr int) float64 { return float64(e.R) },
+		Utility: func(e *x.Percept, dfr int) float64 { return float64(e.R) },
 		PRN:     x.NewPRN(),
 	}
 	agent := &aixi.AImu{Meta: meta}
