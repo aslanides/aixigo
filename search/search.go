@@ -18,7 +18,7 @@ type Meta struct {
 	PRN     *rand.Rand // Pseudorandom number generator for sampling
 	U       []int      // Order in which to explore actions
 	// (NOTE: putting this here is a performance hack)
-	// search for commit message "U2" to undo this
+	// search for commit message "hackish" to undo this
 }
 
 // NewMeta gives sensible defaults
@@ -218,7 +218,8 @@ func (dn *decisionNode) selectAction(dfr int) x.Action {
 		for b := x.Action(0); b < dn.meta.NumActions; b++ {
 			child := dn.getChild(b)
 			normalization := float64(dn.meta.Horizon-dfr) * dn.meta.RewardRange
-			value := child.mean/normalization + dn.meta.UCB*math.Sqrt(math.Log2(dn.visits)/child.visits)
+			// Using x.Log2 is a performance hack
+			value := child.mean/normalization + dn.meta.UCB*math.Sqrt(float64(x.Log2(uint(dn.visits)))/child.visits)
 			if value > max {
 				max = value
 				a = b

@@ -45,3 +45,12 @@ func Equals(e, p *Percept) bool {
 func RLUtility(o Observation, r Reward, dfr int) float64 {
 	return float64(r)
 }
+
+// Log2 for integers to hackishly improve performance in MCTS
+func Log2(v uint) int {
+	n := -1
+	for ; v > 0; n++ {
+		v >>= 1
+	}
+	return n
+}
