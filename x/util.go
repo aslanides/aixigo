@@ -54,3 +54,15 @@ func Log2(v uint) int {
 	}
 	return n
 }
+
+// Entropy (Shannon)
+func Entropy(p []float64) float64 {
+	ent := 0.0
+	for _, v := range p {
+		if v == 0 {
+			continue
+		}
+		ent -= v * math.Log2(v)
+	}
+	return ent
+}
