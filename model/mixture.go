@@ -37,8 +37,21 @@ func NewMixture(models []x.Model) x.Model {
 
 // Occasionally we will need to perform actions & update separately
 
-// Perform (concurrent implementation)
+// Perform (serial implementation)
 func (m *Mixture) Perform(a x.Action) (x.Observation, x.Reward) {
+	n := sample(m)
+	o, r := m.models[n].Perform(a)
+	for idx, model := range m.models {
+		if m.weights[idx] == 0 || idx == n {
+			continue
+		}
+		model.Perform(a)
+	}
+	return o, r
+}
+
+// ParPerform (concurrent implementation)
+func (m *Mixture) ParPerform(a x.Action) (x.Observation, x.Reward) {
 	n := sample(m)
 	var wg sync.WaitGroup
 	o, r := m.models[n].Perform(a)
@@ -56,8 +69,27 @@ func (m *Mixture) Perform(a x.Action) (x.Observation, x.Reward) {
 	return o, r
 }
 
-// Update (concurrent)
+// Update (serial)
 func (m *Mixture) Update(a x.Action, o x.Observation, r x.Reward) {
+	xi := 0.0
+	for idx, model := range m.models {
+		if m.weights[idx] == 0 {
+			continue
+		}
+		m.weights[idx] *= model.ConditionalDistribution(o, r)
+		xi += m.weights[idx]
+	}
+
+	for i := 0; i < m.n; i++ {
+		if m.weights[i] == 0 {
+			continue
+		}
+		m.weights[i] /= xi
+	}
+}
+
+// ParUpdate (concurrent)
+func (m *Mixture) ParUpdate(a x.Action, o x.Observation, r x.Reward) {
 	var wg sync.WaitGroup
 	total := make(chan float64, m.n)
 	for idx, model := range m.models {
@@ -82,7 +114,6 @@ func (m *Mixture) Update(a x.Action, o x.Observation, r x.Reward) {
 	for i := 0; i < m.n; i++ {
 		m.weights[i] /= xi // some wasted iterations but c'est la vie (i think)
 	}
-
 }
 
 // GeneratePerceptAndUpdate is a streamlined version of:
