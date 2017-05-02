@@ -1,4 +1,12 @@
-package search
+package rho
+
+/*
+* Implementation of \rhoUCT, a history-based Monte Carlo Tree Search Algorithm
+* Original paper: "A Monte Carlo AIXI Approximation",
+* 					(Veness, Ng, Hutter, Uther, Silver; 2010)
+*
+*
+ */
 
 import (
 	"aixigo/x"

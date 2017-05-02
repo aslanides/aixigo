@@ -1,4 +1,4 @@
-package model
+package mixture
 
 import (
 	"aixigo/x"

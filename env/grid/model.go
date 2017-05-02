@@ -1,7 +1,7 @@
 package grid
 
 import (
-	"aixigo/model"
+	"aixigo/model/mixture"
 	"aixigo/x"
 )
 
@@ -65,5 +65,5 @@ func NewMixture(spec [][]int) x.Model {
 			models = append(models, NewModel(cpy))
 		}
 	}
-	return model.NewMixture(models)
+	return mixture.NewMixture(models)
 }

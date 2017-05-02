@@ -3,7 +3,7 @@ package main
 import (
 	"aixigo/agent/aixi"
 	"aixigo/env/grid"
-	"aixigo/search"
+	"aixigo/mcts/rho"
 	"aixigo/x"
 	"fmt"
 )
@@ -17,7 +17,7 @@ func main() {
 		{0, 1, 0, 0, 0},
 	}
 	env := grid.New(spec)
-	meta := search.NewMeta(grid.Meta, grid.NewMixture(spec), 10000)
+	meta := rho.NewMeta(grid.Meta, grid.NewModel(spec), 10000)
 
 	agent := &aixi.AImu{Meta: meta}
 	cycles := 100
