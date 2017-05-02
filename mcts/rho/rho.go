@@ -5,7 +5,8 @@ package rho
 * Original paper: "A Monte Carlo AIXI Approximation",
 * 					(Veness, Ng, Hutter, Uther, Silver; 2010)
 *
-*
+* This file contains the vanilla serial implementation, and a version with
+* root parallelism (Chaslot, Winands, & Herik, 2008)
  */
 
 import (
