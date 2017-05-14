@@ -180,8 +180,8 @@ func (m *Mixture) ConditionalDistribution(o x.Observation, r x.Reward) float64 {
 	return xi
 }
 
-// SaveCheckpoint ...
-func (m *Mixture) SaveCheckpoint() {
+// Save ...
+func (m *Mixture) Save() {
 	var wg sync.WaitGroup
 	for idx, model := range m.models {
 		if m.weights[idx] == 0 {
@@ -190,14 +190,14 @@ func (m *Mixture) SaveCheckpoint() {
 		wg.Add(1)
 		go func(model x.Model) {
 			defer wg.Done()
-			model.SaveCheckpoint()
+			model.Save()
 		}(model)
 	}
 	wg.Wait()
 }
 
-// LoadCheckpoint ...
-func (m *Mixture) LoadCheckpoint() {
+// Load ...
+func (m *Mixture) Load() {
 	var wg sync.WaitGroup
 	for idx, model := range m.models {
 		if m.weights[idx] == 0 {
@@ -206,7 +206,7 @@ func (m *Mixture) LoadCheckpoint() {
 		wg.Add(1)
 		go func(model x.Model) {
 			defer wg.Done()
-			model.LoadCheckpoint()
+			model.Load()
 		}(model)
 	}
 	wg.Wait()

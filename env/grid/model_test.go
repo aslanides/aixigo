@@ -42,11 +42,11 @@ func TestModel(t *testing.T) {
 
 func TestSaveLoad(t *testing.T) {
 	model := NewModel(spec)
-	model.SaveCheckpoint()
+	model.Save()
 	o, r := model.Perform(x.Action(1))
 	assert.Equal(t, 1.0, model.ConditionalDistribution(o, r))
 	assert.Equal(t, 1, model.pos.X())
-	model.LoadCheckpoint()
+	model.Load()
 	assert.Equal(t, 0, model.pos.X())
 }
 

@@ -7,7 +7,7 @@ import (
 
 var nodeCount uint // ??
 
-type symbol uint8 // ideally would like to use bools, but this is a bit awkward in Go
+type symbol bool
 
 type updateType bool
 
@@ -24,6 +24,13 @@ type node struct {
 	children        [2]*node
 }
 
+func bool2int(sym symbol) int {
+	if sym {
+		return 1
+	}
+	return 0
+}
+
 func newNode(parent *node) *node {
 	return &node{
 		Count:           0,
@@ -36,7 +43,7 @@ func newNode(parent *node) *node {
 }
 
 func (n *node) addChild(sym symbol) {
-	n.children[sym] = newNode(n)
+	n.children[bool2int(sym)] = newNode(n)
 }
 
 func (n *node) size() uint {
@@ -52,19 +59,19 @@ func (n *node) size() uint {
 }
 
 func (n *node) logKTMul(sym symbol) float64 {
-	return math.Log(float64(n.symCount[sym])+0.5) - math.Log2(float64(n.totalSymCount)+1.0)
+	return math.Log(float64(n.symCount[bool2int(sym)])+0.5) - math.Log2(float64(n.totalSymCount)+1.0)
 }
 
 func (n *node) updateKT(sym symbol, action updateType) {
 	if action == update {
 		n.logProbKT += n.logKTMul(sym)
-		n.symCount[sym]++
+		n.symCount[bool2int(sym)]++
 		n.totalSymCount++
 	} else { // revert
-		if n.symCount[sym] == 0 {
+		if n.symCount[bool2int(sym)] == 0 {
 			log.Fatal("Bad news!")
 		}
-		n.symCount[sym]--
+		n.symCount[bool2int(sym)]--
 		n.logProbKT -= n.logKTMul(sym)
 	}
 }

@@ -1,13 +1,13 @@
 package aixi
 
 import (
-	"aixigo/mcts/rho"
+	"aixigo/mcts"
 	"aixigo/x"
 )
 
 //AImu only for now
 type AImu struct {
-	Meta *rho.Meta
+	Meta *mcts.Meta
 }
 
 // Update ...
@@ -17,5 +17,5 @@ func (agent *AImu) Update(a x.Action, o x.Observation, r x.Reward) {
 
 // GetAction uses the Parallel implementation
 func (agent *AImu) GetAction() x.Action {
-	return rho.GetActionParallel(agent.Meta)
+	return mcts.GetActionParallel(agent.Meta)
 }

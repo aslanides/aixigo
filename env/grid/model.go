@@ -23,13 +23,13 @@ func NewModel(spec [][]int) *Model {
 // Update ...
 func (model *Model) Update(a x.Action, o x.Observation, r x.Reward) {}
 
-// SaveCheckpoint ...
-func (model *Model) SaveCheckpoint() {
+// Save ...
+func (model *Model) Save() {
 	model.savedPos = model.pos
 }
 
-// LoadCheckpoint ...
-func (model *Model) LoadCheckpoint() {
+// Load ...
+func (model *Model) Load() {
 	model.pos = model.savedPos
 }
 

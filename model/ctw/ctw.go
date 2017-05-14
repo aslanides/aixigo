@@ -4,12 +4,15 @@ import "aixigo/x"
 
 // CTW ...
 type CTW struct {
+	ObsBits    []symbol
+	RewBits    []symbol
+	ActionBits []symbol
 	// TODO: Wrap the context tree and implement the x.Model interface
 	// interface methods are stubbed out right now
 }
 
 // NewCTW ...
-func NewCTW() x.Model {
+func NewCTW(meta *x.Meta) x.Model {
 	return &CTW{} // TODO
 }
 
@@ -31,8 +34,8 @@ func (m *CTW) Copy() x.Model {
 	return m // TODO
 }
 
-// SaveCheckpoint ...
-func (m *CTW) SaveCheckpoint() {}
+// Save ...
+func (m *CTW) Save() {}
 
-// LoadCheckpoint ...
-func (m *CTW) LoadCheckpoint() {}
+// Load ...
+func (m *CTW) Load() {}

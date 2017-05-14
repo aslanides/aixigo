@@ -32,8 +32,8 @@ type Model interface {
 	Perform(Action) (Observation, Reward)                // Implements the Environment interface
 	Update(Action, Observation, Reward)                  // Must be updateable
 	ConditionalDistribution(Observation, Reward) float64 // Must be probabilistic
-	SaveCheckpoint()                                     // Save and Load are needed to reset MCTS simulations
-	LoadCheckpoint()                                     //
+	Save()                                               // Save and Load are needed to reset MCTS simulations
+	Load()                                               //
 	Copy() Model                                         // Need to be easy to copy
 }
 

@@ -50,7 +50,7 @@ func New(spec [][]int) *Gridworld {
 			case 1:
 				t = &wall{newBaseTile(i, j)}
 			case 2:
-				t = &dispenser{newBaseTile(i, j)}
+				t = newDispenser(i, j)
 			default:
 			}
 			row = append(row, t)

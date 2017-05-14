@@ -21,7 +21,8 @@ func TestToInt(t *testing.T) {
 func TestArgMax(t *testing.T) {
 	var A []float64
 	A = []float64{1.1, 3.3, -123.2, 40000.1, 1e6, -1e7, 22.3, -3.14}
-	assert.Equal(t, 4, ArgMax(A))
+	i, _ := ArgMax(A)
+	assert.Equal(t, 4, i)
 }
 
 func TestLog2(t *testing.T) {

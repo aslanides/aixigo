@@ -3,6 +3,7 @@ package x
 import (
 	"math"
 	"math/rand"
+	"runtime"
 	"time"
 )
 
@@ -12,7 +13,7 @@ func NewPRN() *rand.Rand {
 }
 
 //ArgMax returns the argmax (index) for an array of floats
-func ArgMax(A []float64) int {
+func ArgMax(A []float64) (int, float64) {
 	max := math.Inf(-1)
 	idx := -1
 	for i, v := range A {
@@ -21,7 +22,7 @@ func ArgMax(A []float64) int {
 			idx = i
 		}
 	}
-	return idx
+	return idx, max
 }
 
 //ToInt helper for Observation objects
@@ -39,6 +40,13 @@ func ToInt(o ObservationBits) Observation {
 // Equals checks equality of percepts
 func Equals(e, p *Percept) bool {
 	return p.R == e.R && p.O == e.O
+}
+
+// NumCPU does what is expected
+func NumCPU() int {
+	cpu := runtime.NumCPU()
+	runtime.GOMAXPROCS(cpu)
+	return cpu
 }
 
 // RLUtility is the utility function for normal reward-based reinforcement learners

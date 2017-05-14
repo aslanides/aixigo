@@ -1,6 +1,9 @@
 package grid
 
-import "aixigo/x"
+import (
+	"aixigo/x"
+	"math/rand"
+)
 
 const wallPenalty = x.Reward(-10)
 const dispenserReward = x.Reward(10)
@@ -74,12 +77,21 @@ func (e empty) Rew() x.Reward {
 	return emptyReward
 }
 
+func newDispenser(i, j int) tile {
+	return &dispenser{newBaseTile(i, j), x.NewPRN(), rand.Float64()}
+}
+
 type dispenser struct {
 	baseTile
+	prn   *rand.Rand
+	theta float64
 }
 
 func (d dispenser) Rew() x.Reward {
-	return dispenserReward
+	if d.prn.Float64() <= d.theta {
+		return dispenserReward
+	}
+	return emptyReward
 }
 
 type wall struct {

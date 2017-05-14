@@ -1,4 +1,4 @@
-package kr
+package mcts
 
 /**
 * Kernel Regression UCT for MCTS in continuous action spaces

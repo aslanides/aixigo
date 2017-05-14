@@ -1,4 +1,4 @@
-package rho
+package mcts
 
 import (
 	"aixigo/env/grid"
@@ -19,6 +19,7 @@ func init() {
 		{0, 1, 2},
 	}
 	meta = NewMeta(grid.Meta, grid.NewModel(spec), 10000)
+	meta.Horizon = 4
 	env = grid.New(spec)
 }
 
@@ -32,17 +33,17 @@ func helperSearchDeterministic(t *testing.T, planner func(*Meta) x.Action) {
 	a = planner(meta)
 	assert.Equal(t, x.Action(3), a)
 	meta.Model.Perform(a)
-
-	a = planner(meta)
-	assert.Equal(t, x.Action(1), a)
-	meta.Model.Perform(a)
-
-	a = planner(meta)
-	assert.Equal(t, x.Action(3), a)
-	meta.Model.Perform(a)
-
-	a = planner(meta)
-	assert.Equal(t, x.Action(4), a)
+	//
+	// a = planner(meta)
+	// assert.Equal(t, x.Action(1), a)
+	// meta.Model.Perform(a)
+	//
+	// a = planner(meta)
+	// assert.Equal(t, x.Action(3), a)
+	// meta.Model.Perform(a)
+	//
+	// a = planner(meta)
+	// assert.Equal(t, x.Action(4), a)
 }
 
 func TestSearchDeterministicSerial(t *testing.T) {
@@ -50,7 +51,11 @@ func TestSearchDeterministicSerial(t *testing.T) {
 }
 
 func TestSearchDeterministicParallel(t *testing.T) {
-	helperSearchDeterministic(t, GetActionParallel)
+	helperSearchDeterministic(t, GetActionRootParallel)
+}
+
+func TestSearchDeterministicTreeParallel(t *testing.T) {
+	helperSearchDeterministic(t, GetActionTreeParallel)
 }
 
 // Benchmarks
@@ -85,6 +90,6 @@ func BenchmarkParallelHorizon10Samples10K(b *testing.B) {
 	meta.Horizon = 10
 	meta.Samples = 10000
 	for n := 0; n < b.N; n++ {
-		GetActionParallel(meta)
+		GetActionRootParallel(meta)
 	}
 }
