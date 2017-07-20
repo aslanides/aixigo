@@ -10,9 +10,9 @@ import (
 // Meta holds search metadata
 type Meta struct {
 	x.Meta             // Base Meta struct, holding environment metadata
-	Horizon int        // MCTS planning horizon
-	Samples int        // MCTS samples
-	UCB     float64    // MCTS exploration constant
+	Horizon int        // Planning horizon
+	Samples int        // Samples
+	UCB     float64    // Exploration constant
 	Model   x.Model    // Environment model
 	Utility x.Utility  // Agent utility function
 	PRN     *rand.Rand // Pseudorandom number generator for sampling

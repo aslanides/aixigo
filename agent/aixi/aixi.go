@@ -17,5 +17,5 @@ func (agent *AImu) Update(a x.Action, o x.Observation, r x.Reward) {
 
 // GetAction uses the Parallel implementation
 func (agent *AImu) GetAction() x.Action {
-	return mcts.GetActionParallel(agent.Meta)
+	return mcts.GetActionRootParallel(agent.Meta)
 }
